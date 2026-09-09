@@ -166,8 +166,9 @@ object RealTimeMessageReporter : ClickableFeature(), WeDatabaseListenerApi.IInse
                     synchronized(seenKeys) {
                         if (!seenKeys.add(key)) return@execute
                         if (seenKeys.size > 4096) {
-                            val it = seenKeys.iterator()
-                            repeat(1024) { if (it.hasNext()) { it.next(); it.remove() } }
+                            // 注意:不可命名为 it —— repeat{} 内 it 是循环下标(Int),会遮蔽迭代器
+                            val iter = seenKeys.iterator()
+                            repeat(1024) { if (iter.hasNext()) { iter.next(); iter.remove() } }
                         }
                     }
                     val payload = buildPayload(msg) ?: return@execute
